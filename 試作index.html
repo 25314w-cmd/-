@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>修学旅行を全力で楽しむために！みんなはどのくらいできているかな？健康管理テスト</title>
+    <!-- 丸文字フォント -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --pokeball-red: #EE1515;
+            --pokeball-white: #FFFFFF;
+            --accent-yellow: #FFDE00;
+            --accent-blue: #3B4CCA;
+            --card-shadow: 0 8px 24px rgba(255, 182, 193, 0.25);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Zen Maru Gothic', 'Hiragino Maru Gothic ProN', 'Maru Gothic', 'メイリオ', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: #fffaf0;
+            background-image: 
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='36' height='36' viewBox='0 0 36 36'%3E%3Ccircle cx='18' cy='18' r='14' fill='%23fff' stroke='%23ff9999' stroke-width='2'/%3E%3Cpath d='M 4 18 A 14 14 0 0 1 32 18 Z' fill='%23ff7f7f'/%3E%3Cline x1='4' y1='18' x2='32' y2='18' stroke='%23ff9999' stroke-width='2'/%3E%3Ccircle cx='18' cy='18' r='4' fill='%23fff' stroke='%23ff9999' stroke-width='2'/%3E%3C/svg%3E"),
+                radial-gradient(#ffd1dc 20%, transparent 20%),
+                radial-gradient(#ffe5b4 20%, transparent 20%),
+                radial-gradient(#e0f7fa 20%, transparent 20%);
+            background-size: 80px 80px, 40px 40px, 60px 60px, 50px 50px;
+            background-position: 0 0, 20px 20px, 10px 30px, 30px 10px;
+            background-attachment: fixed;
+            min-height: 100vh;
+            color: #4a4a4a;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px 10px 40px;
+            overflow-x: hidden;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 680px;
+            margin-top: 10px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(5px);
+            border-radius: 28px;
+            padding: 32px 24px;
+            box-shadow: var(--card-shadow);
+            border: 4px solid #ffb6c1;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* 画面表示制御 */
+        #start-screen { display: block; text-align: center; }
+        #quiz-screen { display: none; }
+        #result-screen { display: none; }
+
+        .start-title {
+            font-size: 1.5rem;
+            color: #333;
+            margin-bottom: 16px;
+            font-weight: 900;
+            line-height: 1.4;
+        }
+
+        .start-desc {
+            font-size: 1.1rem;
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 28px;
+            font-weight: 700;
+            background: #fff8d6;
+            padding: 12px 16px;
+            border-radius: 16px;
+            border: 2px dashed #ffc107;
+            display: inline-block;
+        }
+
+        .ball-icon-decor {
+            width: 80px;
+            height: 80px;
+            margin: 10px auto 20px;
+            background: radial-gradient(circle at 30% 30%, #ff8585, var(--pokeball-red));
+            border-radius: 50%;
+            border: 5px solid #333;
+            position: relative;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+            animation: floatBall 2.5s ease-in-out infinite alternate;
+        }
+
+        @keyframes floatBall {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-8px); }
+        }
+
+        .ball-icon-decor::before {
+            content: '';
+            position: absolute;
+            top: 45%; left: 0;
+            width: 100%; height: 10%;
+            background: #333;
+        }
+
+        .ball-icon-decor::after {
+            content: '';
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 24px; height: 24px;
+            background: white;
+            border: 4px solid #333;
+            border-radius: 50%;
+        }
+
+        .btn-start {
+            background: linear-gradient(135deg, #FFDE00, #E6C600);
+            color: #222;
+            font-size: 1.5rem;
+            font-weight: 900;
+            padding: 18px 48px;
+            border: 4px solid #333;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 8px 0 #333;
+            transition: all 0.1s;
+            display: inline-block;
+            width: 100%;
+            max-width: 320px;
+        }
+
+        .btn-start:active {
+            transform: translateY(4px);
+            box-shadow: 0 4px 0 #333;
+        }
+
+        .quiz-progress {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            font-weight: 900;
+            font-size: 1.2rem;
+            color: var(--accent-blue);
+        }
+
+        .progress-bar-bg {
+            width: 100%;
+            height: 16px;
+            background: #f0e6ff;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 24px;
+            border: 2px solid #333;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff85a2, #7b61ff);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .question-title {
+            font-size: 1.25rem;
+            font-weight: 900;
+            margin-bottom: 20px;
+            line-height: 1.5;
+            color: #333;
+        }
+
+        .options-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .option-btn {
+            background: #fdfbf7;
+            border: 3px solid #ffd1dc;
+            border-radius: 16px;
+            padding: 18px;
+            text-align: left;
+            font-size: 1.05rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 700;
+            color: #444;
+            display: flex;
+            align-items: center;
+            line-height: 1.4;
+        }
+
+        .option-btn:hover {
+            border-color: #ff85a2;
+            background: #fff0f5;
+        }
+
+        .option-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* ----------------------------------------------------
+           暗転 ＆ モンスターボール ＆ オーラ演出
+        ---------------------------------------------------- */
+        #animation-screen {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            background: #09090b;
+            z-index: 1000;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .anim-message {
+            position: absolute;
+            top: 10%;
+            width: 90%;
+            font-size: 2.2rem;
+            font-weight: 900;
+            color: #FFDE00;
+            text-shadow: 0 0 15px rgba(255, 222, 0, 0.8), 0 0 30px rgba(255, 222, 0, 0.5);
+            text-align: center;
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: all 0.6s ease;
+            z-index: 1050;
+        }
+
+        .anim-message.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .pokeball-anim-container {
+            width: 260px; 
+            height: 260px;
+            position: relative;
+            z-index: 1030;
+            transition: opacity 0.3s ease;
+        }
+
+        .pokeball-wrapper {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        .ball-top {
+            width: 100%;
+            height: 50%;
+            background: linear-gradient(180deg, #FF1C1C, #CC0000);
+            border-radius: 130px 130px 0 0;
+            border: 10px solid #111;
+            border-bottom: 5px solid #111;
+            position: relative;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: inset 0 10px 15px rgba(255,255,255,0.4);
+        }
+
+        .ball-bottom {
+            width: 100%;
+            height: 50%;
+            background: linear-gradient(180deg, #FFFFFF, #DDDDDD);
+            border-radius: 0 0 130px 130px;
+            border: 10px solid #111;
+            border-top: 5px solid #111;
+            position: relative;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: inset 0 -10px 15px rgba(0,0,0,0.15);
+        }
+
+        .ball-center-button {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 68px; height: 68px;
+            background: white;
+            border: 10px solid #111;
+            border-radius: 50%;
+            z-index: 1035;
+            transition: all 0.4s ease;
+            box-shadow: 0 0 15px rgba(0,0,0,0.5);
+        }
+
+        .ball-center-button::after {
+            content: '';
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 24px; height: 24px;
+            background: #fff;
+            border: 3px solid #888;
+            border-radius: 50%;
+        }
+
+        .shake-heavy { 
+            animation: shakeHeavy 0.5s infinite; 
+        }
+
+        @keyframes shakeHeavy {
+            0% { transform: rotate(0deg) scale(1); }
+            20% { transform: rotate(-20deg) scale(1.05); }
+            40% { transform: rotate(20deg) scale(1.05); }
+            60% { transform: rotate(-15deg) scale(1.08); }
+            80% { transform: rotate(15deg) scale(1.08); }
+            100% { transform: rotate(0deg) scale(1); }
+        }
+
+        .pokeball-open .ball-top {
+            transform: translateY(-100px) rotate(-10deg);
+        }
+        .pokeball-open .ball-bottom {
+            transform: translateY(100px) rotate(10deg);
+        }
+        .pokeball-open .ball-center-button {
+            opacity: 0;
+            transform: translate(-50%, -50%) scale(2);
+        }
+
+        /* 属性別背景オーラ */
+        .aura-burst {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            width: 170vw; height: 170vw;
+            border-radius: 50%;
+            filter: blur(25px);
+            z-index: 1010;
+            pointer-events: none;
+            opacity: 0;
+            transition: transform 0.9s cubic-bezier(0.1, 0.8, 0.3, 1), opacity 0.5s ease;
+        }
+
+        .aura-rainbow {
+            background: conic-gradient(
+                from 0deg,
+                #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #9400d3, #ff0000
+            );
+        }
+
+        .aura-fire {
+            background: radial-gradient(circle, rgba(255,255,255,1) 0%, rgba(255,120,0,1) 35%, rgba(220,20,0,0.8) 65%, rgba(0,0,0,0) 85%);
+        }
+
+        .aura-water {
+            background: radial-gradient(circle, rgba(255,255,255,1) 0%, rgba(0,210,255,1) 35%, rgba(0,80,255,0.85) 65%, rgba(0,0,0,0) 85%);
+        }
+
+        .aura-earth {
+            background: radial-gradient(circle, rgba(255,255,255,1) 0%, rgba(120,220,90,1) 35%, rgba(30,140,50,0.8) 65%, rgba(0,0,0,0) 85%);
+        }
+
+        .aura-burst.active {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 0.95;
+        }
+
+        .aura-rainbow.active {
+            animation: rainbowSpin 2.5s linear infinite;
+        }
+
+        @keyframes rainbowSpin {
+            100% { transform: translate(-50%, -50%) scale(1) rotate(360deg); }
+        }
+
+        /* 飛び出しポケモン */
+        .pokemon-reveal-container {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%) scale(0) rotate(-20deg);
+            z-index: 1040;
+            opacity: 0;
+            transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.3), opacity 0.4s ease;
+            pointer-events: none;
+        }
+
+        .pokemon-reveal-container.pop-out {
+            transform: translate(-50%, -50%) scale(1) rotate(0deg);
+            opacity: 1;
+        }
+
+        .pokemon-reveal-container.slide-up {
+            transform: translate(-50%, -180%) scale(0.9) rotate(0deg);
+            opacity: 0;
+            transition: transform 0.8s cubic-bezier(0.5, 0, 0.75, 0), opacity 0.6s ease;
+        }
+
+        .pokemon-reveal-container img {
+            width: 520px;
+            max-width: 95vw;
+            height: auto;
+            max-height: 70vh;
+            object-fit: contain;
+            filter: drop-shadow(0 0 35px rgba(255, 255, 255, 0.95)) drop-shadow(0 15px 30px rgba(0,0,0,0.8));
+        }
+
+        /* ----------------------------------------------------
+           結果画面 & アニメーション
+        ---------------------------------------------------- */
+        .result-header { text-align: center; margin-bottom: 20px; }
+
+        .rank-badge {
+            display: inline-block;
+            background: #333;
+            color: var(--accent-yellow);
+            font-weight: 900;
+            padding: 10px 24px;
+            border-radius: 30px;
+            font-size: 1.2rem;
+            border: 3px solid var(--accent-yellow);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            line-height: 1.4;
+        }
+
+        .pokemon-display-card {
+            background: linear-gradient(135deg, #fff5f7, #f0f4ff);
+            border: 4px solid #ffb6c1;
+            border-radius: 20px;
+            padding: 24px 16px;
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .pokemon-img-container {
+            width: 380px; 
+            max-width: 100%;
+            height: 380px;
+            margin: 0 auto 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .pokemon-img-container img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            filter: drop-shadow(0 12px 20px rgba(0,0,0,0.2));
+            animation: floating 3.5s ease-in-out infinite alternate;
+        }
+
+        @keyframes floating {
+            0% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-16px) rotate(2deg); }
+            100% { transform: translateY(0px) rotate(-2deg); }
+        }
+
+        .pokemon-name-tag { font-size: 1.8rem; font-weight: 900; color: #333; }
+        .level-tag { font-size: 1.3rem; color: var(--pokeball-red); font-weight: 900; margin-top: 4px; }
+
+        .score-box {
+            background: #fff;
+            border: 3px solid #ffb6c1;
+            padding: 12px;
+            border-radius: 16px;
+            font-weight: 900;
+            font-size: 1.25rem;
+            margin-top: 16px;
+        }
+
+        .advice-section-title {
+            font-size: 1.25rem;
+            font-weight: 900;
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 4px solid #ff85a2;
+        }
+
+        .advice-card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.05);
+            border-left: 8px solid #e74c3c;
+            border-top: 1px solid #eee;
+            border-right: 1px solid #eee;
+            border-bottom: 1px solid #eee;
+        }
+
+        .advice-q-title {
+            font-weight: 900;
+            font-size: 1.05rem;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            line-height: 1.4;
+        }
+
+        .status-badge {
+            font-size: 0.85rem;
+            padding: 4px 10px;
+            border-radius: 12px;
+            color: white;
+            font-weight: 900;
+            white-space: nowrap;
+            background: #e74c3c;
+        }
+
+        .advice-body {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            background: #fffaf0;
+            padding: 12px;
+            border-radius: 12px;
+            margin-top: 8px;
+        }
+
+        .advice-icon {
+            font-size: 2.2rem;
+            flex-shrink: 0;
+            width: 50px;
+            height: 50px;
+            background: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #ffb6c1;
+        }
+
+        .advice-text {
+            font-size: 0.95rem;
+            color: #444;
+            line-height: 1.5;
+            font-weight: 700;
+        }
+
+        .perfect-msg-card {
+            background: #e8f8f5;
+            border: 3px dashed #2ecc71;
+            border-radius: 16px;
+            padding: 24px;
+            text-align: center;
+            font-size: 1.15rem;
+            font-weight: 900;
+            color: #27ae60;
+            line-height: 1.6;
+        }
+
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            margin-top: 28px;
+        }
+
+        .btn-action {
+            width: 100%;
+            max-width: 320px;
+            padding: 16px;
+            border: 3px solid #333;
+            border-radius: 40px;
+            font-weight: 900;
+            font-size: 1.2rem;
+            cursor: pointer;
+            text-align: center;
+            box-shadow: 0 5px 0 #333;
+        }
+
+        .btn-action:active {
+            transform: translateY(3px);
+            box-shadow: 0 2px 0 #333;
+        }
+
+        .btn-restart { background: #FFDE00; color: #222; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        
+        <!-- スタート画面 -->
+        <div id="start-screen" class="card">
+            <div class="ball-icon-decor"></div>
+            <h1 class="start-title">修学旅行を全力で楽しむために！<br>みんなはどのくらいできているかな？<br>健康管理テスト</h1>
+            <div class="start-desc">
+                ぜんぶの質問にこたえると、きみの健康管理度がわかるよ！
+            </div>
+            <div>
+                <button id="start-btn" class="btn-start">スタート！</button>
+            </div>
+        </div>
+
+        <!-- クイズ画面 -->
+        <div id="quiz-screen" class="card">
+            <div class="quiz-progress">
+                <span id="question-number">第 1 問 / 8 問</span>
+            </div>
+            <div class="progress-bar-bg">
+                <div id="progress-bar" class="progress-bar-fill"></div>
+            </div>
+            
+            <div id="question-text" class="question-title"></div>
+            <div id="options-container" class="options-grid"></div>
+        </div>
+
+        <!-- 暗転 ＆ モンスターボール ＆ オーラ演出画面 -->
+        <div id="animation-screen">
+            <div id="anim-msg" class="anim-message">きみのパートナーポケモンは……</div>
+            
+            <div id="pokeball-container" class="pokeball-anim-container shake-heavy">
+                <div id="pokeball-wrapper" class="pokeball-wrapper">
+                    <div class="ball-top"></div>
+                    <div class="ball-center-button"></div>
+                    <div class="ball-bottom"></div>
+                </div>
+            </div>
+
+            <!-- ポケモン属性別オーラ -->
+            <div id="aura-effect" class="aura-burst"></div>
+            
+            <!-- 飛び出す超巨大ポケモン -->
+            <div id="pokemon-reveal" class="pokemon-reveal-container">
+                <img id="reveal-img" src="" alt="パートナーポケモン">
+            </div>
+        </div>
+
+        <!-- 結果画面 -->
+        <div id="result-screen" class="card">
+            <div class="result-header">
+                <div id="rank-badge" class="rank-badge"></div>
+            </div>
+
+            <div class="pokemon-display-card">
+                <div class="pokemon-img-container" id="result-pokemon-img"></div>
+                <div class="pokemon-name-tag" id="result-pokemon-name"></div>
+                <div class="level-tag" id="result-pokemon-level"></div>
+                
+                <div class="score-box" id="result-score-text"></div>
+            </div>
+
+            <div class="advice-section-title">💡 振り返り・解説</div>
+            <div id="advice-list"></div>
+
+            <div class="action-buttons">
+                <button id="restart-btn" class="btn-action btn-restart">🔄 もう一度挑戦</button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // クイズデータ
+        const quizData = [
+            {
+                q: "質問１ 修学旅行にもっていく着がえは…",
+                options: [
+                    "①長そで・長ズボン・上着",
+                    "②長そで・長ズボン",
+                    "③半そで・半ズボン・上着",
+                    "④半そで・半ズボン"
+                ],
+                icon: "🧥",
+                advice: "日光は、横須賀とくらべて気温が低いんだ。かならず長そでの上着を持っていこう！また、ハイキング中は虫にさされやすいよ。半ズボンやスカートではなく、長ズボンにすると安心だよ！"
+            },
+            {
+                q: "質問２ 修学旅行中に持っていく薬（ふだん飲んでいる薬や酔い止め薬）は…",
+                options: [
+                    "①おうちの人と確認しながら用意した",
+                    "②おうちの人が用意した",
+                    "③まだ用意していない",
+                    "④わからない"
+                ],
+                icon: "💊",
+                advice: "修学旅行のときにおうちの人はきてくれないよ！どのようなときに薬を飲むのか、どのくらいの量を飲むのか、いつ飲むのかをかならずおうちの人と確認して、じぶんでできるようにしておこう！"
+            },
+            {
+                q: "質問３ じぶんの体調について…",
+                options: [
+                    "①おうちの人と話をして、体調が悪いときはどうすればよいか話し合った",
+                    "②おうちの人と話をした",
+                    "③話をしていない/体調が悪くなることはないから大丈夫だとおもっている",
+                    "④わからない"
+                ],
+                icon: "🗣️",
+                advice: "「じぶんは大丈夫」だとおもっていても、いつもとちがう環境で体調が悪くなってしまうこともあるよ。事前におうちの人と体調が悪くなったらどうするかを話し合っておこう！しんぱいなことがあったらいつでも先生に相談してね！"
+            },
+            {
+                q: "質問４ さいきんの寝るじかんは…",
+                options: [
+                    "①夜10時までには寝ている",
+                    "②夜10時～11時に寝ている",
+                    "③夜11時～12時に寝ている",
+                    "④夜12時よりおそくに寝ている"
+                ],
+                icon: "🌙",
+                advice: "寝ぶそくは体調不良のもと！全力で修学旅行を楽しむために、生活リズムをくずさないこと、はやね・はやおき・あさごはんをこころがけることが大切だよ！"
+            },
+            {
+                q: "質問５ さいきん朝ごはんは…",
+                options: [
+                    "①毎日しっかりたべている",
+                    "②1・2回たべわすれた",
+                    "③あまりたべなかった",
+                    "④ほとんどたべない/まったくたべなかった"
+                ],
+                icon: "🍚",
+                advice: "朝ごはんは一日のエネルギーの源！修学旅行ではたくさんあるいたり、乗りものにのったりするので、げんきに活動するためにもしっかり朝ごはんをたべてくるようにしよう！"
+            },
+            {
+                q: "質問６ 「班行動のときに同じ班の人がころんで、ひざをすりむいちゃった！ちかくに先生もいないし…。このあとどうする？」",
+                options: [
+                    "①ペットボトルや水道の水でひざをあらい、ティッシュなどでキズのまわりをキレイにする",
+                    "②ティッシュなどでキズのまわりをキレイにする",
+                    "③手でキズのまわりのよごれをとる",
+                    "④そのままにする"
+                ],
+                icon: "🩹",
+                advice: "ケガをしたときは、まず水でキレイにあらうことがなにより大切なんだ！あらわないとキズにバイキンがついたままになって、キズがはれたりしてしまうからね。あらったあとは、ティッシュなどでキレイにふき、もっていればきずちょうこうをはるとバッチリ！"
+            },
+            {
+                q: "質問７ 「班行動のときに同じ班の人が体調が悪くなってすわりこんじゃった！ちかくに先生もいないし…。このあとどうする？」",
+                options: [
+                    "①安全なところに移動して、ちかくにいる大人に助けをもとめる",
+                    "②安全なところに移動して、やすけいする",
+                    "③その場ですわり、やすけいする",
+                    "④そのまま班行動をけいぞくする"
+                ],
+                icon: "🆘",
+                advice: "体調が悪くなってうごけないときは、まず車や人のとうりみちにならない安全なところにゆっくり移動しよう。そして、かならずちかくの先生や大人にこえをかけて助けをもとめよう！じぶんたちだけでなんとかしようとしないことが大切だよ！"
+            },
+            {
+                q: "質問８ 「これからバス（または電車）にのるけれど、酔わないかしんぱいだな…。酔い止め薬はいつのめばいいかな？」",
+                options: [
+                    "①乗りものにのる前",
+                    "②乗りものにのってすぐ",
+                    "③乗りものにのってすこしたってから",
+                    "④乗りもの酔いになってから"
+                ],
+                icon: "🚌",
+                advice: "酔い止め薬は、乗りものにのる前にのっておこう！薬がきくまでにじかんがかかるので、しょうじょうがでてから飲むのはよくないよ！"
+            }
+        ];
+
+        // チーム・ランク別データ設定
+        const rankData = {
+            perfect: {
+                id: 'mega',
+                auraClass: 'aura-rainbow',
+                badge: "🏆 準備バッチリ！パーフェクト",
+                name: "メガレックウザ",
+                level: "Lv. 100",
+                imgUrl: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/10079.png"
+            },
+            almost: {
+                id: 'charizard',
+                auraClass: 'aura-fire',
+                badge: "✨ あと一歩でパーフェクト",
+                name: "リザードン",
+                level: "Lv. 70",
+                imgUrl: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/6.png"
+            },
+            tryHard: {
+                id: 'empoleon',
+                auraClass: 'aura-water',
+                badge: "👍 まだできることはある！頑張ろう！",
+                name: "エンペルト",
+                level: "Lv. 40",
+                imgUrl: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/395.png"
+            },
+            danger: {
+                id: 'snorlax',
+                auraClass: 'aura-earth',
+                badge: "⚠ このままではキケン！しっかり準備しよう",
+                name: "カビゴン",
+                level: "Lv. 15",
+                imgUrl: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/143.png"
+            }
+        };
+
+        // 配点: ①=3点, ②=2点, ③=1点, ④=0点
+        const optionScores = [3, 2, 1, 0];
+
+        let currentQuestion = 0;
+        let userAnswers = [];
+
+        // スタートボタン処理関数
+        function startQuiz() {
+            currentQuestion = 0;
+            userAnswers = [];
+            document.getElementById('start-screen').style.display = 'none';
+            document.getElementById('quiz-screen').style.display = 'block';
+            document.getElementById('result-screen').style.display = 'none';
+            showQuestion();
+        }
+
+        function showQuestion() {
+            const data = quizData[currentQuestion];
+            document.getElementById('question-number').innerText = `第 ${currentQuestion + 1} 問 / ${quizData.length} 問`;
+            document.getElementById('progress-bar').style.width = `${((currentQuestion) / quizData.length) * 100}%`;
+            document.getElementById('question-text').innerText = data.q;
+
+            const container = document.getElementById('options-container');
+            container.innerHTML = '';
+
+            data.options.forEach((opt, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerText = opt;
+                btn.onclick = () => selectOption(index);
+                container.appendChild(btn);
+            });
+        }
+
+        function selectOption(index) {
+            userAnswers.push(index);
+            if (currentQuestion + 1 < quizData.length) {
+                currentQuestion++;
+                showQuestion();
+            } else {
+                finishQuiz();
+            }
+        }
+
+        function finishQuiz() {
+            document.getElementById('quiz-screen').style.display = 'none';
+            
+            const animScreen = document.getElementById('animation-screen');
+            const animMsg = document.getElementById('anim-msg');
+            const pokeballContainer = document.getElementById('pokeball-container');
+            const pokeballWrapper = document.getElementById('pokeball-wrapper');
+            const auraEffect = document.getElementById('aura-effect');
+            const revealContainer = document.getElementById('pokemon-reveal');
+            const revealImg = document.getElementById('reveal-img');
+
+            // 合計得点の計算（最大24点）
+            let totalScore = 0;
+            userAnswers.forEach(ansIndex => {
+                totalScore += optionScores[ansIndex];
+            });
+
+            // ランク判定
+            let activeRank = rankData.danger;
+            if (totalScore === 24) {
+                activeRank = rankData.perfect;      // 24点（メガレックウザ）
+            } else if (totalScore >= 18) {
+                activeRank = rankData.almost;       // 18〜23点（リザードン）
+            } else if (totalScore >= 10) {
+                activeRank = rankData.tryHard;      // 10〜17点（エンペルト）
+            } else {
+                activeRank = rankData.danger;       // 9点以下（カビゴン）
+            }
+
+            revealImg.src = activeRank.imgUrl;
+            auraEffect.className = 'aura-burst ' + activeRank.auraClass;
+
+            animScreen.style.display = 'flex';
+            animMsg.classList.remove('show');
+            pokeballContainer.style.opacity = '1';
+            pokeballContainer.classList.add('shake-heavy');
+            pokeballWrapper.classList.remove('pokeball-open');
+            auraEffect.classList.remove('active');
+            revealContainer.classList.remove('pop-out', 'slide-up');
+
+            // 1. メッセージ表示
+            setTimeout(() => {
+                animMsg.classList.add('show');
+            }, 300);
+
+            // 2. モンスターボールが開く
+            setTimeout(() => {
+                pokeballContainer.classList.remove('shake-heavy');
+                pokeballWrapper.classList.add('pokeball-open');
+                auraEffect.classList.add('active');
+
+                // 3. 超巨大ポケモン表示
+                setTimeout(() => {
+                    pokeballContainer.style.opacity = '0';
+                    revealContainer.classList.add('pop-out');
+
+                    // 4. 上へスライドアウトして結果へ
+                    setTimeout(() => {
+                        revealContainer.classList.add('slide-up');
+
+                        setTimeout(() => {
+                            animScreen.style.display = 'none';
+                            showResult(totalScore, activeRank);
+                        }, 700);
+
+                    }, 1400);
+
+                }, 400);
+
+            }, 2000);
+        }
+
+        function showResult(score, rank) {
+            document.getElementById('result-screen').style.display = 'block';
+
+            document.getElementById('rank-badge').innerText = rank.badge;
+            document.getElementById('result-pokemon-name').innerText = rank.name;
+            document.getElementById('result-pokemon-level').innerText = rank.level;
+            document.getElementById('result-pokemon-img').innerHTML = `<img src="${rank.imgUrl}" alt="${rank.name}">`;
+            document.getElementById('result-score-text').innerHTML = `あなたの健康管理度： <strong>${score} 点</strong> / 24点満点`;
+
+            const adviceList = document.getElementById('advice-list');
+            adviceList.innerHTML = '';
+
+            let reviewCount = 0;
+
+            quizData.forEach((item, idx) => {
+                const userChoice = userAnswers[idx];
+                const choiceScore = optionScores[userChoice];
+
+                // 満点（3点）以外の選択肢を選んだ問題のみ表示
+                if (choiceScore < 3) {
+                    reviewCount++;
+                    const card = document.createElement('div');
+                    card.className = 'advice-card';
+
+                    card.innerHTML = `
+                        <div class="advice-q-title">
+                            <span>${item.q}</span>
+                            <span class="status-badge">
+                                見直し (${choiceScore}点)
+                            </span>
+                        </div>
+                        <div class="advice-body">
+                            <div class="advice-icon">${item.icon}</div>
+                            <div class="advice-text">
+                                ${item.advice}
+                            </div>
+                        </div>
+                    `;
+                    adviceList.appendChild(card);
+                }
+            });
+
+            // 全問満点（24点）の場合
+            if (reviewCount === 0) {
+                adviceList.innerHTML = `
+                    <div class="perfect-msg-card">
+                        🎉 すばらしい！全問パーフェクトです！<br>
+                        修学旅行の健康管理・準備はバッチリ完璧だね！
+                    </div>
+                `;
+            }
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // イベントバインド
+        document.getElementById('start-btn').onclick = startQuiz;
+        document.getElementById('restart-btn').onclick = () => {
+            document.getElementById('result-screen').style.display = 'none';
+            document.getElementById('start-screen').style.display = 'block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+    </script>
+</body>
+</html>
